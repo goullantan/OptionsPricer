@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="Wpf.OptionsPricer.View.OptionPricingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:viewModel="clr-namespace:Wpf.OptionsPricer.ViewModel"
+             mc:Ignorable="d">
+    
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="enumOptionNames"
+                                MethodName="GetValues"
+                                ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="viewModel:OptionPricingViewModel+EnumOptionNames"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Label FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" 
+               Grid.ColumnSpan="2" Margin="0,15,0,0" Grid.Row="0"
+               BorderBrush="White" BorderThickness="2">Black-Scholes Pricing Model</Label>
+        <Label FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="DemiBold" 
+               Grid.Row="1" Grid.Column="0" Margin="0,10,0,0">Parameters</Label>
+        <Label FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="DemiBold" 
+               Grid.Row="1" Grid.Column="1" Margin="0,10,0,0">Value</Label>
+
+        <!-- Pricing Parameters -->
+        <Label FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Grid.Column="0" Grid.Row="2">Stock Price :</Label>
+        <Label FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Grid.Column="0" Grid.Row="3">Strike Price :</Label>
+        <Label FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Grid.Column="0" Grid.Row="4">Time to Maturity (in years) :</Label>
+        <Label FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Grid.Column="0" Grid.Row="5">Standard Deviation :</Label>
+        <Label FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Grid.Column="0" Grid.Row="6">Risk Free Interest Rate :</Label>
+
+        <TextBox Height="20" Margin="15,5,10,5" Grid.Column="1"
+                 Grid.Row="2" Text="{Binding StockPrice, Mode=TwoWay}"/>
+        <TextBox Height="20" Margin="15,5,10,5" Grid.Column="1"
+                 Grid.Row="3" Text="{Binding StrikePrice, Mode=TwoWay}"/>
+        <TextBox Height="20" Margin="15,5,10,5" Grid.Column="1"
+                 Grid.Row="4" Text="{Binding TimeToMaturity, Mode=TwoWay}"/>
+        <TextBox Height="20" Margin="15,5,10,5" Grid.Column="1"
+                 Grid.Row="5" Text="{Binding StandardDeviation, Mode=TwoWay}"/>
+        <TextBox Height="20" Margin="15,5,10,5" Grid.Column="1"
+                 Grid.Row="6" Text="{Binding RiskFreeInterestRate, Mode=TwoWay}"/>
+
+        <Label FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" 
+               Grid.Row="7" Grid.ColumnSpan="2" Foreground="Orange" Content="{Binding InputParametersCheckResult}"/>
+
+        <Label FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center"
+               Grid.Row="8" Grid.Column="0" Margin="5,10,0,0">Select option :</Label>
+
+        <ComboBox Grid.Column="0" Grid.Row="9" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource enumOptionNames}}"
+                  Margin="10,0,0,0" Width="150" SelectedItem="{Binding OptionName}"/>
+        
+        <Label FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"
+               Grid.Row="10" Grid.Column="0" Margin="0,15,0,0">Option Price (€) :</Label>
+
+        <Label FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="White" BorderThickness="1"
+               Grid.Row="10" Grid.Column="1" Margin="0,15,0,0" Width="100" Content="{Binding OptionPrice}"/>
+
+        <Button Command="{Binding PriceButton}"
+                Grid.Row="8" Grid.RowSpan="2" Grid.Column="1"
+                Foreground="White"
+                Width="150"
+                Height="40"
+                Cursor="Hand" Margin="0,20,0,0">Price</Button>
+    </Grid>
+    
+</UserControl>

@@ -1,0 +1,87 @@
+﻿<Window x:Class="Wpf.OptionsPricer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:core="clr-namespace:Wpf.OptionsPricer.Core"
+        xmlns:view="clr-namespace:Wpf.OptionsPricer.View"
+        xmlns:viewModel="clr-namespace:Wpf.OptionsPricer.ViewModel"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="500" Width="450"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
+    
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="15"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.Resources>
+            <core:SelectedItemToContentConverter x:Key="SelectedItemToContentConverter"/>
+
+            <DataTemplate x:Key="MenuItemTemplate" DataType="{x:Type mah:HamburgerMenuIconItem}">
+                <Grid x:Name="RootGrid"
+                      Height="50"
+                      Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ContentControl Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Content="{Binding Icon}"
+                                    Focusable="False"/>
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Center"
+                               FontSize="20"
+                               Text="{Binding Label}" />
+                </Grid>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:HamburgerMenu}}, Path=IsPaneOpen}" Value="false">
+                        <Setter TargetName="RootGrid" Property="ToolTip" Value="{Binding ToolTip, Mode=OneWay}"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewModel:OptionPricingViewModel}">
+                <view:OptionPricingView DataContext="{Binding Source={StaticResource Locator}, Path=OptionPricing}"/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModel:InfoViewModel}">
+                <view:InfoView DataContext="{Binding Source={StaticResource Locator}, Path=Info}"/>
+            </DataTemplate>
+
+        </Grid.Resources>
+
+        <mah:HamburgerMenu x:Name="HamburgerMenuControl"
+                           DisplayMode="CompactInLine"
+                           IsPaneOpen="False"
+                           ItemTemplate="{StaticResource MenuItemTemplate}"
+                           ItemsSource="{Binding MenuItems}"
+                           OptionsItemTemplate="{StaticResource MenuItemTemplate}"
+                           OptionsItemsSource="{Binding MenuOptionItems}"
+                           SelectedIndex="0"
+                           PaneBackground="CornflowerBlue"
+                           OpenPaneLength="175">
+            <mah:HamburgerMenu.Content>
+                <MultiBinding Converter="{StaticResource SelectedItemToContentConverter}">
+                    <Binding FallbackValue="{x:Null}"
+                             Mode="OneWay"
+                             Path="SelectedItem.Tag"
+                             RelativeSource="{RelativeSource Self}"/>
+                    <Binding FallbackValue="{x:Null}"
+                             Mode="OneWay"
+                             Path="SelectedOptionsItem.Tag"
+                             RelativeSource="{RelativeSource Self}"/>
+                </MultiBinding>
+            </mah:HamburgerMenu.Content>
+            
+        </mah:HamburgerMenu>
+
+        <StackPanel Grid.Row="1" Background="CornflowerBlue">
+            <TextBlock FontSize="9" HorizontalAlignment="Right" Margin="0,0,5,0" Text="{Binding About}"/>
+        </StackPanel>
+    </Grid>
+</Window>
